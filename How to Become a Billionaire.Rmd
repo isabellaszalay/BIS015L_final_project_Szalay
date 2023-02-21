@@ -1,0 +1,24 @@
+---
+title: "How to Become a Billionaire"
+output: html_document
+date: "2023-02-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+```
+
+```{r}
+billionaires<- read.csv("forbes_dataset_2022/forbes_billionaires_2022.csv")
+billionaires
+```
+
+```{r}
+companies <- read.csv("forbes_dataset_2022/forbes_companies_2022.csv")
+companies
+```
+
