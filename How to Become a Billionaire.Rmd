@@ -9,16 +9,70 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+library("tidyverse")
+
+library("janitor")
+
+library("naniar")
+```
+
+
+```{r}
 getwd()
 ```
 
 ```{r}
-billionaires<- read.csv("forbes_dataset_2022/forbes_billionaires_2022.csv")
+billionaires<- read.csv("forbes_dataset_2022/forbes_billionaires_2022.csv", na="")
 billionaires
+```
+```{r}
+billionaires <- janitor::clean_names(billionaires)
 ```
 
 ```{r}
-companies <- read.csv("forbes_dataset_2022/forbes_companies_2022.csv")
+companies <- read.csv("forbes_dataset_2022/forbes_companies_2022.csv", na="")
 companies
 ```
+```{r}
+companies <- janitor::clean_names(companies)
+```
 
+
+```{r}
+glimpse(billionaires)
+```
+```{r}
+glimpse(companies)
+```
+```{r}
+naniar::miss_var_summary(billionaires)
+```
+- "about" isn't important for analyzing data
+
+- "state" NAs refer to people outside the US
+
+- "title" may not have a current working position especially if they are not involved in an organization
+
+- "philanthropyScore" interesting metric but a lot of data is not available - we might still be able to do something with this or find additional data.
+
+- "organization" some wealth is from family, or several different organizations, we still have field they work in and source of wealth so hopefully that is okay 
+
+
+```{r}
+naniar::miss_var_summary(companies)
+```
+- checked through data, NAs are represented as "NA" and "" but switched all "" to "NA"
+
+
+
+things we may want to analyze for: 
+
+filter country to US - look at which states produce the most billionaires
+
+what country has the most assests/profits?
+
+histogram: frequency of people born over span of years 
+
+connecting final worth of billionaires to the field they are in
+
+something with final worth and if they are self made or not 
