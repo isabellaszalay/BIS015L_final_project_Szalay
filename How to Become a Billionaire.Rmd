@@ -41,7 +41,7 @@ companies <- janitor::clean_names(companies)
 ```{r}
 glimpse(billionaires)
 ```
-```{r}
+```{r
 glimpse(companies)
 ```
 ```{r}
