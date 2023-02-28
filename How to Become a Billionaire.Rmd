@@ -16,7 +16,6 @@ library("janitor")
 library("naniar")
 ```
 
-
 ```{r}
 getwd()
 ```
@@ -33,20 +32,23 @@ billionaires <- janitor::clean_names(billionaires)
 companies <- read.csv("forbes_dataset_2022/forbes_companies_2022.csv", na="")
 companies
 ```
+
 ```{r}
 companies <- janitor::clean_names(companies)
 ```
 
-
 ```{r}
 glimpse(billionaires)
 ```
-```{r
+
+```{r}
 glimpse(companies)
 ```
+
 ```{r}
 naniar::miss_var_summary(billionaires)
 ```
+
 - "about" isn't important for analyzing data
 
 - "state" NAs refer to people outside the US
@@ -61,11 +63,11 @@ naniar::miss_var_summary(billionaires)
 ```{r}
 naniar::miss_var_summary(companies)
 ```
+
 - checked through data, NAs are represented as "NA" and "" but switched all "" to "NA"
 
 
-
-things we may want to analyze for: 
+## things we may want to analyze for: 
 
 filter country to US - look at which states produce the most billionaires
 
@@ -73,6 +75,14 @@ what country has the most assests/profits?
 
 histogram: frequency of people born over span of years 
 
-connecting final worth of billionaires to the field they are in
+connecting final worth of billionaires to the field they are in - can optimize to see which field produces the highest profit margins 
 
 something with final worth and if they are self made or not 
+
+separate the B in the sales, profits, assets and market value columns and change them to factor so that calculations can be performed on them
+
+mutate net profit margin = net profit/revenue * 100 - can be an indicator of the company's stability of income (shows whether a company is reliable or not)
+
+can filter for the top 10 companies that have the highest net profit margin and market value - a combination of both would indicate a very stable company, can make a bar plot to "show" the highest of both (like on the last question of the midterm)
+
+we can then use the top 10 companies to see which country comes up the highest (likely the US) and then connect these to the billionaires data
