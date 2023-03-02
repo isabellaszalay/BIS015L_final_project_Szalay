@@ -32,6 +32,82 @@ billionaires <- janitor::clean_names(billionaires)
 companies <- read.csv("forbes_dataset_2022/forbes_companies_2022.csv", na="")
 companies
 ```
+mutate_at
+case_when
+new column that is just b or m 
+separate 
+regex
+
+```{r}
+companies <- companies %>%
+    separate(sales, into=c("sales", "factor1"), sep=" ")
+```
+
+```{r}
+companies <- companies %>%
+  separate(profit, into=c("profit", "factor2"), sep=" ")
+```
+
+
+```{r}
+companies <- companies %>%
+  separate(assets, into=c("assets", "factor3"), sep=" ")
+```
+
+
+```{r}
+companies <- companies %>%
+  separate(market.value, into=c("market.value", "factor4"), sep=" ")
+```
+
+
+```{r}
+gsub("\\$", "", companies$sales)
+```
+```{r}
+companies
+```
+
+
+```{r}
+companies$profit=as.numeric(gsub("\\$", "", companies$profit))
+```
+
+```{r}
+companies$assets=as.numeric(gsub(",","", companies$assets))
+```
+
+```{r}
+companies$assets=as.numeric(gsub("\\$", "", companies$assets))
+```
+
+```{r}
+companies_new1 <- companies %>%
+  gsub(",","", assets)
+```
+
+```{r}
+companies$market.value=as.numeric(gsub("\\$", "", companies$market.value))
+```
+
+```{r}
+companies
+```
+
+
+
+
+
+```{r}
+companies$sales
+```
+
+
+```{r}
+companies %>%
+  mutate_at(c("sales", "profit", "assets", "market.value"), remove."$", na.rm=T)
+```
+
 
 ```{r}
 companies <- janitor::clean_names(companies)
@@ -71,11 +147,11 @@ naniar::miss_var_summary(companies)
 
 filter country to US - look at which states produce the most billionaires
 
-what country has the most assests/profits?
+*what country has the most assests/profits?
 
 histogram: frequency of people born over span of years 
 
-connecting final worth of billionaires to the field they are in - can optimize to see which field produces the highest profit margins 
+*connecting final worth of billionaires to the field they are in - can optimize to see which field produces the highest profit margins 
 
 something with final worth and if they are self made or not 
 
