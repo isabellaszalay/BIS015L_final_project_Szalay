@@ -62,7 +62,9 @@ companies <- companies %>%
 
 
 ```{r}
-gsub("\\$", "", companies$sales)
+companies$sales = gsub("\\$", "", companies$sales)
+companies$sales = as.numeric(companies$sales)
+
 ```
 ```{r}
 companies
@@ -74,7 +76,20 @@ companies$profit=as.numeric(gsub("\\$", "", companies$profit))
 ```
 
 ```{r}
-companies$assets=as.numeric(gsub(",","", companies$assets))
+companies$assets = gsub(",","", companies$assets)
+companies$assets = gsub("\\$","", companies$assets)
+companies$assets = as.numeric(companies$assets)
+```
+
+```{r}
+companies$market.value = gsub(",","", companies$market.value)
+companies$market.value = gsub("\\$","", companies$market.value)
+companies$market.value = as.numeric(companies$market.value)
+```
+
+
+```{r}
+companies
 ```
 
 ```{r}
