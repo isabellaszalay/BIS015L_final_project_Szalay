@@ -93,40 +93,40 @@ companies
 ```
 
 ```{r}
-companies$assets=as.numeric(gsub("\\$", "", companies$assets))
-```
-
-```{r}
-companies_new1 <- companies %>%
-  gsub(",","", assets)
-```
-
-```{r}
-companies$market.value=as.numeric(gsub("\\$", "", companies$market.value))
+companies <- janitor::clean_names(companies)
 ```
 
 ```{r}
 companies
 ```
 
-
-
-
-
 ```{r}
-companies$sales
+companies %>%
+  filter(factor2 =="M")
 ```
-
 
 ```{r}
 companies %>%
-  mutate_at(c("sales", "profit", "assets", "market.value"), remove."$", na.rm=T)
+  filter(factor1 == "M")
 ```
+
+```{r}
+companies %>%
+  filter(factor3 == "M")
+```
+
+```{r}
+companies %>%
+  filter(factor4=="M")
+```
+
 
 
 ```{r}
-companies <- janitor::clean_names(companies)
+companies
 ```
+
+
 
 ```{r}
 glimpse(billionaires)
@@ -135,6 +135,7 @@ glimpse(billionaires)
 ```{r}
 glimpse(companies)
 ```
+
 
 ```{r}
 naniar::miss_var_summary(billionaires)
