@@ -66,6 +66,7 @@ companies$sales = gsub("\\$", "", companies$sales)
 companies$sales = as.numeric(companies$sales)
 
 ```
+
 ```{r}
 companies
 ```
@@ -101,32 +102,28 @@ companies
 ```
 
 ```{r}
-companies %>%
-  filter(factor2 =="M")
+companies <- companies %>%
+  mutate(across(c(sales), ~ case_when(factor1 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
 ```
 
 ```{r}
-companies %>%
-  filter(factor1 == "M")
+companies <- companies %>%
+  mutate(across(c(profit), ~ case_when(factor2 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
 ```
 
 ```{r}
-companies %>%
-  filter(factor3 == "M")
+companies <- companies %>%
+  mutate(across(c(assets), ~ case_when(factor3 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
 ```
 
 ```{r}
-companies %>%
-  filter(factor4=="M")
+companies <- companies %>%
+  mutate(across(c(market_value), ~ case_when(factor4 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
 ```
-
-
-
-```{r}
-companies
-```
-
-
 
 ```{r}
 glimpse(billionaires)
@@ -136,6 +133,25 @@ glimpse(billionaires)
 glimpse(companies)
 ```
 
+# Removing the columns with the name factor
+```{r}
+companies
+```
+```{r}
+companies <- companies %>% 
+  select(-factor1, -factor2, -factor3, -factor4)
+companies
+```
+
+# Renaming the columns
+```{r}
+companies <- companies %>% 
+  rename(sales_bil = "sales", profit_bil = "profit", assets_bil = "assets", market_value_bil = "market_value")
+```
+
+```{r}
+companies
+```
 
 ```{r}
 naniar::miss_var_summary(billionaires)
@@ -158,12 +174,11 @@ naniar::miss_var_summary(companies)
 
 - checked through data, NAs are represented as "NA" and "" but switched all "" to "NA"
 
-
 ## things we may want to analyze for: 
 
 filter country to US - look at which states produce the most billionaires
 
-*what country has the most assests/profits?
+2 - *what country has the most assests/profits?
 
 histogram: frequency of people born over span of years 
 
@@ -171,10 +186,10 @@ histogram: frequency of people born over span of years
 
 something with final worth and if they are self made or not 
 
-separate the B in the sales, profits, assets and market value columns and change them to factor so that calculations can be performed on them
+1 - mutate net profit margin = net profit/revenue * 100 - can be an indicator of the company's stability of income (shows whether a company is reliable or not)
 
-mutate net profit margin = net profit/revenue * 100 - can be an indicator of the company's stability of income (shows whether a company is reliable or not)
+comparison with lowest profit, market value - connect to the field 
 
-can filter for the top 10 companies that have the highest net profit margin and market value - a combination of both would indicate a very stable company, can make a bar plot to "show" the highest of both (like on the last question of the midterm)
+plot - can filter for the top 10 companies that have the highest net profit margin and market value - a combination of both would indicate a very stable company, can make a bar plot to "show" the highest of both (like on the last question of the midterm)
 
 we can then use the top 10 companies to see which country comes up the highest (likely the US) and then connect these to the billionaires data
