@@ -14,6 +14,10 @@ library("tidyverse")
 library("janitor")
 
 library("naniar")
+
+library(RColorBrewer)
+
+library(paletteer)
 ```
 
 ```{r}
@@ -133,7 +137,6 @@ companies <- companies %>%
   rename(sales_bil = "sales", profit_bil = "profit", assets_bil = "assets", market_value_bil = "market_value")
 ```
 
-
 -----
 
 - "about" isn't important for analyzing data
@@ -147,13 +150,11 @@ companies <- companies %>%
 - "organization" some wealth is from family, or several different organizations, we still have field they work in and source of wealth so hopefully that is okay 
 
 
-
-
 ## things we may want to analyze for: 
 
 filter country to US - look at which states produce the most billionaires
 
-2 - *what country has the most assests/profits?
+2 - *what country has the most assets/profits?
 
 histogram: frequency of people born over span of years 
 
@@ -161,27 +162,25 @@ histogram: frequency of people born over span of years
 
 something with final worth and if they are self made or not 
 
-1 - mutate net profit margin = net profit/revenue * 100 - can be an indicator of the company's stability of income (shows whether a company is reliable or not)
+DONE - 1 - mutate net profit margin = net profit/revenue * 100 - can be an indicator of the company's stability of income (shows whether a company is reliable or not) & assets to sales ratio = assets/sales - could make shiny app for this
 
-comparison with lowest profit, market value - connect to the field 
+DONE - comparison of highest to lowest market value - connect to the field 
 
 plot - can filter for the top 10 companies that have the highest net profit margin and market value - a combination of both would indicate a very stable company, can make a bar plot to "show" the highest of both (like on the last question of the midterm)
 
 we can then use the top 10 companies to see which country comes up the highest (likely the US) and then connect these to the billionaires data
 
-
 ------
+
 ```{r}
 companies
 ```
-
 
 ```{r}
 companies %>%
   select(global_company, profit_bil) %>%
   arrange(-profit_bil) %>%
-  head(10) %>%
-  ggplot(aes(x=))
+  head(10)
 ```
 
 ```{r}
@@ -192,7 +191,7 @@ ui <- dashboardPage(
   selectInput("x", "Select Company", choices = c("Saudi Arabian Oil Company (Saudi Aramco)", "Apple", "Berkshire Hathaway", "Alphabet", "Microsoft", "ICBC", "China Construction Bank", "JPMorgan Chase", "Meta Platforms", "Agricultural Bank of China"),
               selected = "Saudi Arabian Oil Company (Saudi Aramco)"),
  
-  ), 
+  ),
   
 server <- function(input, output, session) { 
   
@@ -214,3 +213,101 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
+## Mutating the profit/revenue column for net profit margin - is there a correlation between profit margins and market value?
+```{r}
+companies_NPM <- companies %>% 
+  mutate(net_profit_margin_percent = profit_bil/sales_bil *100) %>% 
+  filter(global_company != "Bradespar") %>% 
+  arrange(-net_profit_margin_percent) %>% 
+  head(10)
+```
+
+## Mutating the assets to sales ratio
+```{r}
+companies %>% 
+  mutate(assets_sales_ratio = assets_bil/sales_bil) %>% 
+  filter(global_company != "Bradespar") %>% 
+  arrange(-assets_sales_ratio) %>% 
+  head(10)
+```
+
+## Comparison of highest market value to lowest market value
+
+Highest market value - top 10
+```{r}
+companies_MV_high <- companies %>% 
+  arrange(-market_value_bil) %>% 
+  head(10) %>% 
+  select(global_company, country, market_value_bil) %>% 
+  ggplot(aes(x=reorder(global_company, market_value_bil), y=market_value_bil, fill = country))+
+  geom_col(color = "black")+
+  coord_flip()+
+  labs(title = " Highest Market Values of the Top 10 Global Companies by Country",
+       x = "Market Value",
+       y = "Global Company")
+```
+
+```{r}
+companies_MV_high+
+  theme_light()+
+  theme(plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=9, hjust=1))
+```
+
+Lowest Market Value - Lower 10
+```{r}
+companies_MV_low <- companies %>% 
+  arrange(market_value_bil) %>% 
+  head(10) %>% 
+  select(global_company, country, market_value_bil) %>% 
+  ggplot(aes(x=reorder(global_company, market_value_bil), y=market_value_bil, fill = country))+
+  geom_col(color = "black")+
+  coord_flip()+
+  labs(title = "Lowest Market Values of the Top 10 Global Companies by Country",
+       x = "Market Value",
+       y = "Global Company")
+```
+
+```{r}
+companies_MV_low+
+  theme_light()+
+  theme(plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=9, hjust=1))
+```
+
+## Trying to find the companies with the best market value and net profit margins - ask during OH
+```{r}
+companies_1 <- companies %>% 
+  mutate(net_profit_margin_percent = profit_bil/sales_bil *100) %>% 
+  filter(global_company != "Bradespar") %>% 
+  arrange(-net_profit_margin_percent)
+```
+
+```{r}
+companies_1 %>% 
+  arrange(-market_value_bil)
+```
+
+## Billionaire data
+```{r}
+billionaires_country <- billionaires %>% 
+  count(country) %>% 
+  arrange(-n) %>% 
+  head(10) %>% 
+  ggplot(aes(x=reorder(country,n), y=n))+
+  geom_col(color = "black", fill ="coral1")+
+  coord_flip()+
+  labs(title = "No. of Billionaires by Country",
+       x = "Country",
+       y = "Number of Billionaires")
+```
+
+```{r}
+billionaires_country+
+  theme_light()+
+  theme(plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=9, hjust=1))
+```
