@@ -220,6 +220,7 @@ companies_NPM <- companies %>%
   filter(global_company != "Bradespar") %>% 
   arrange(-net_profit_margin_percent) %>% 
   head(10)
+companies_NPM
 ```
 
 ## Mutating the assets to sales ratio
@@ -311,3 +312,23 @@ billionaires_country+
         axis.title = element_text(size=10),
         axis.text.x = element_text(size=9, hjust=1))
 ```
+## Companies by country Pie Chart
+```{r}
+companies %>% 
+  count(country) %>% 
+  arrange(-n) %>% 
+  head(10) %>% 
+  ggplot(aes(x=country, y=n, fill=country))+
+  geom_col()+
+  coord_polar()
+```
+```{r}
+prop <- c(590, 297, 196, 65, 64, 58, 55, 54, 54, 52)
+pie(prop)
+```
+
+```{r}
+myPalette <- brewer.pal(9, "BuPu")
+pie(prop, labels = c("US", "China", "Japan", "S.Korea", "UK", "Canada", "India", "France", "Hong Kong", "Germany"), border = "black", col=myPalette)
+```
+
