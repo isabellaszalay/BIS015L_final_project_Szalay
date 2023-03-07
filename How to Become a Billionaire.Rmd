@@ -20,24 +20,35 @@ library("naniar")
 getwd()
 ```
 
+# Load Data, Tidy Names, & Identify NAs
 ```{r}
 billionaires<- read.csv("forbes_dataset_2022/forbes_billionaires_2022.csv", na="")
 billionaires
 ```
+
 ```{r}
 billionaires <- janitor::clean_names(billionaires)
+```
+
+```{r}
+naniar::miss_var_summary(billionaires)
 ```
 
 ```{r}
 companies <- read.csv("forbes_dataset_2022/forbes_companies_2022.csv", na="")
 companies
 ```
-mutate_at
-case_when
-new column that is just b or m 
-separate 
-regex
 
+```{r}
+companies <- janitor::clean_names(companies)
+```
+
+```{r}
+naniar::miss_var_summary(companies)
+```
+
+
+# Separate B/M
 ```{r}
 companies <- companies %>%
     separate(sales, into=c("sales", "factor1"), sep=" ")
@@ -48,29 +59,22 @@ companies <- companies %>%
   separate(profit, into=c("profit", "factor2"), sep=" ")
 ```
 
-
 ```{r}
 companies <- companies %>%
   separate(assets, into=c("assets", "factor3"), sep=" ")
 ```
 
-
 ```{r}
 companies <- companies %>%
-  separate(market.value, into=c("market.value", "factor4"), sep=" ")
+  separate(market_value, into=c("market_value", "factor4"), sep=" ")
 ```
 
 
+# Get Rid of '$' & Turn Values into Numeric
 ```{r}
 companies$sales = gsub("\\$", "", companies$sales)
 companies$sales = as.numeric(companies$sales)
-
 ```
-
-```{r}
-companies
-```
-
 
 ```{r}
 companies$profit=as.numeric(gsub("\\$", "", companies$profit))
@@ -83,24 +87,13 @@ companies$assets = as.numeric(companies$assets)
 ```
 
 ```{r}
-companies$market.value = gsub(",","", companies$market.value)
-companies$market.value = gsub("\\$","", companies$market.value)
-companies$market.value = as.numeric(companies$market.value)
+companies$market_value = gsub(",","", companies$market_value)
+companies$market_value = gsub("\\$","", companies$market_value)
+companies$market_value = as.numeric(companies$market_value)
 ```
 
 
-```{r}
-companies
-```
-
-```{r}
-companies <- janitor::clean_names(companies)
-```
-
-```{r}
-companies
-```
-
+# Turn Millions into Billions
 ```{r}
 companies <- companies %>%
   mutate(across(c(sales), ~ case_when(factor1 == "M"~ .x/1000,
@@ -125,23 +118,14 @@ companies <- companies %>%
                                       TRUE ~ .x)))
 ```
 
-```{r}
-glimpse(billionaires)
-```
-
-```{r}
-glimpse(companies)
-```
 
 # Removing the columns with the name factor
-```{r}
-companies
-```
+
 ```{r}
 companies <- companies %>% 
   select(-factor1, -factor2, -factor3, -factor4)
-companies
 ```
+
 
 # Renaming the columns
 ```{r}
@@ -149,13 +133,8 @@ companies <- companies %>%
   rename(sales_bil = "sales", profit_bil = "profit", assets_bil = "assets", market_value_bil = "market_value")
 ```
 
-```{r}
-companies
-```
 
-```{r}
-naniar::miss_var_summary(billionaires)
-```
+-----
 
 - "about" isn't important for analyzing data
 
@@ -168,11 +147,7 @@ naniar::miss_var_summary(billionaires)
 - "organization" some wealth is from family, or several different organizations, we still have field they work in and source of wealth so hopefully that is okay 
 
 
-```{r}
-naniar::miss_var_summary(companies)
-```
 
-- checked through data, NAs are represented as "NA" and "" but switched all "" to "NA"
 
 ## things we may want to analyze for: 
 
@@ -193,3 +168,49 @@ comparison with lowest profit, market value - connect to the field
 plot - can filter for the top 10 companies that have the highest net profit margin and market value - a combination of both would indicate a very stable company, can make a bar plot to "show" the highest of both (like on the last question of the midterm)
 
 we can then use the top 10 companies to see which country comes up the highest (likely the US) and then connect these to the billionaires data
+
+
+------
+```{r}
+companies
+```
+
+
+```{r}
+companies %>%
+  select(global_company, profit_bil) %>%
+  arrange(-profit_bil) %>%
+  head(10) %>%
+  ggplot(aes(x=))
+```
+
+```{r}
+ui <- dashboardPage(
+  dashboardHeader(title = "Profits by Company"),
+  fluidRow(
+  box(title = "Plot Options", width = 4,
+  selectInput("x", "Select Company", choices = c("Saudi Arabian Oil Company (Saudi Aramco)", "Apple", "Berkshire Hathaway", "Alphabet", "Microsoft", "ICBC", "China Construction Bank", "JPMorgan Chase", "Meta Platforms", "Agricultural Bank of China"),
+              selected = "Saudi Arabian Oil Company (Saudi Aramco)"),
+ 
+  ), 
+  
+server <- function(input, output, session) { 
+  
+  session$onSessionEnded(stopApp)
+  
+  output$plot <- renderPlot({
+    companies %>% 
+    filter(global_company==input$x) %>% 
+    ggplot(aes(x=global_company, y=profit_bil)) + 
+      geom_col(color="darkgoldenrod2", fill="coral1", alpha=0.9) +
+      theme_linedraw(base_size = 18) +
+      theme(axis.text.x = element_text(angle = 70, hjust = 1))
+  })
+  
+  session$onSessionEnded(stopApp)
+
+  }
+
+shinyApp(ui, server)
+```
+
