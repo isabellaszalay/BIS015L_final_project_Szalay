@@ -153,6 +153,8 @@ companies <- companies %>%
 
 ## things we may want to analyze for: 
 
+describe dataset, where we got it, ss the shinyapp
+
 filter country to US - look at which states produce the most billionaires
 
 2 - *what country has the most assets/profits?
