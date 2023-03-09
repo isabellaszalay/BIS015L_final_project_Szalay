@@ -176,42 +176,74 @@ we can then use the top 10 companies to see which country comes up the highest (
 companies
 ```
 
+## App that shows final worth of billionaires by the field they are in
+
 ```{r}
-companies %>%
-  select(global_company, profit_bil) %>%
-  arrange(-profit_bil) %>%
-  head(10)
+billionaires
+```
+```{r}
+billionaires %>% 
+  select(person_name, final_worth, category) %>%
+  arrange(-final_worth) %>%
+  head(10)%>%
+  ggplot(aes(x=person_name, y=final_worth, fill=category))+ 
+  geom_col(alpha=0.4) + 
+  facet_wrap(~category, ncol=2)+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  labs(title = "Final Worth by Billionaire and Field",
+       x = NULL,
+       y = "Final Worth",
+       fill = "Field")
 ```
 
 ```{r}
-ui <- dashboardPage(
-  dashboardHeader(title = "Profits by Company"),
-  fluidRow(
-  box(title = "Plot Options", width = 4,
-  selectInput("x", "Select Company", choices = c("Saudi Arabian Oil Company (Saudi Aramco)", "Apple", "Berkshire Hathaway", "Alphabet", "Microsoft", "ICBC", "China Construction Bank", "JPMorgan Chase", "Meta Platforms", "Agricultural Bank of China"),
-              selected = "Saudi Arabian Oil Company (Saudi Aramco)"),
- 
-  ),
+library(shiny)
+
+ui <- fluidPage(titlePanel("Final Worth by Billionaire and Field"),
+                radioButtons("x", "Select Fill Variable", choices=c("Automotive", "Diversified", "Fashion & Retail", "Finance & Investments", "Technology" ),
+                             selected="Automotive"),
+                plotOutput("plot")
   
-server <- function(input, output, session) { 
-  
-  session$onSessionEnded(stopApp)
-  
+)
+
+server <- function(input, output, session) {
   output$plot <- renderPlot({
-    companies %>% 
-    filter(global_company==input$x) %>% 
-    ggplot(aes(x=global_company, y=profit_bil)) + 
-      geom_col(color="darkgoldenrod2", fill="coral1", alpha=0.9) +
-      theme_linedraw(base_size = 18) +
-      theme(axis.text.x = element_text(angle = 70, hjust = 1))
+    billionaires %>%
+    select(person_name, final_worth, category) %>%
+      arrange(-final_worth) %>%
+      head(10)%>%
+      ggplot(aes(x=person_name, y=final_worth, fill=category))+ 
+      geom_col(alpha=0.4) +  
+      theme_light(base_size=18) +
+      theme(axis.text.x = element_text(angle = 60, hjust = 1))
   })
   
-  session$onSessionEnded(stopApp)
-
-  }
+}
 
 shinyApp(ui, server)
+
 ```
+
+- issues 
+  cannot facet wrap field with billionaires and final worth. 
+  instead of billionaires maybe their positions??? 
+
+```{r}
+billionaires %>% 
+  select(person_name, final_worth, category) %>%
+  arrange(-final_worth) %>%
+  head(10)%>%
+  ggplot(aes(x=person_name, y=final_worth, fill=category))+ 
+  geom_col(alpha=0.4) + 
+  facet_wrap(~category, ncol=2)+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  labs(title = "Final Worth by Billionaire and Field",
+       x = NULL,
+       y = "Final Worth",
+       fill = "Field")
+```
+
+
 
 ## Mutating the profit/revenue column for net profit margin - is there a correlation between profit margins and market value?
 ```{r}
