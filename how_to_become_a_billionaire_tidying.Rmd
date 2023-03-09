@@ -153,6 +153,8 @@ companies <- companies %>%
 
 ## things we may want to analyze for: 
 
+describe dataset, where we got it, ss the shinyapp
+
 filter country to US - look at which states produce the most billionaires
 
 2 - *what country has the most assets/profits?
@@ -170,5 +172,9 @@ DONE - comparison of highest to lowest market value - connect to the field
 plot - can filter for the top 10 companies that have the highest net profit margin and market value - a combination of both would indicate a very stable company, can make a bar plot to "show" the highest of both (like on the last question of the midterm)
 
 we can then use the top 10 companies to see which country comes up the highest (likely the US) and then connect these to the billionaires data
+
+Billionaire - analyse the year that billionaires were born to see what age you should be to have the highest chances of becoming a billionaire
+
+Could make a final visual on the ppt showing the pathway you should take to be a billionaire (which country, field, what year you should be born)
 
 
