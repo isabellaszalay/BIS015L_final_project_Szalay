@@ -1,0 +1,174 @@
+---
+title: "How to Become a Billionaire"
+output: html_document
+date: "2023-02-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+
+library("janitor")
+
+library("naniar")
+
+library(RColorBrewer)
+
+library(paletteer)
+```
+
+```{r}
+getwd()
+```
+
+# Load Data, Tidy Names, & Identify NAs
+```{r}
+billionaires<- read.csv("forbes_dataset_2022/forbes_billionaires_2022.csv", na="")
+billionaires
+```
+
+```{r}
+billionaires <- janitor::clean_names(billionaires)
+```
+
+```{r}
+naniar::miss_var_summary(billionaires)
+```
+
+```{r}
+companies <- read.csv("forbes_dataset_2022/forbes_companies_2022.csv", na="")
+companies
+```
+
+```{r}
+companies <- janitor::clean_names(companies)
+```
+
+```{r}
+naniar::miss_var_summary(companies)
+```
+
+
+# Separate B/M
+```{r}
+companies <- companies %>%
+    separate(sales, into=c("sales", "factor1"), sep=" ")
+```
+
+```{r}
+companies <- companies %>%
+  separate(profit, into=c("profit", "factor2"), sep=" ")
+```
+
+```{r}
+companies <- companies %>%
+  separate(assets, into=c("assets", "factor3"), sep=" ")
+```
+
+```{r}
+companies <- companies %>%
+  separate(market_value, into=c("market_value", "factor4"), sep=" ")
+```
+
+
+# Get Rid of '$' & Turn Values into Numeric
+```{r}
+companies$sales = gsub("\\$", "", companies$sales)
+companies$sales = as.numeric(companies$sales)
+```
+
+```{r}
+companies$profit=as.numeric(gsub("\\$", "", companies$profit))
+```
+
+```{r}
+companies$assets = gsub(",","", companies$assets)
+companies$assets = gsub("\\$","", companies$assets)
+companies$assets = as.numeric(companies$assets)
+```
+
+```{r}
+companies$market_value = gsub(",","", companies$market_value)
+companies$market_value = gsub("\\$","", companies$market_value)
+companies$market_value = as.numeric(companies$market_value)
+```
+
+
+# Turn Millions into Billions
+```{r}
+companies <- companies %>%
+  mutate(across(c(sales), ~ case_when(factor1 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
+```
+
+```{r}
+companies <- companies %>%
+  mutate(across(c(profit), ~ case_when(factor2 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
+```
+
+```{r}
+companies <- companies %>%
+  mutate(across(c(assets), ~ case_when(factor3 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
+```
+
+```{r}
+companies <- companies %>%
+  mutate(across(c(market_value), ~ case_when(factor4 == "M"~ .x/1000,
+                                      TRUE ~ .x)))
+```
+
+
+# Removing the columns with the name factor
+
+```{r}
+companies <- companies %>% 
+  select(-factor1, -factor2, -factor3, -factor4)
+```
+
+
+# Renaming the columns
+```{r}
+companies <- companies %>% 
+  rename(sales_bil = "sales", profit_bil = "profit", assets_bil = "assets", market_value_bil = "market_value")
+```
+
+
+-----
+
+- "about" isn't important for analyzing data
+
+- "state" NAs refer to people outside the US
+
+- "title" may not have a current working position especially if they are not involved in an organization
+
+- "philanthropyScore" interesting metric but a lot of data is not available - we might still be able to do something with this or find additional data.
+
+- "organization" some wealth is from family, or several different organizations, we still have field they work in and source of wealth so hopefully that is okay 
+
+
+## things we may want to analyze for: 
+
+filter country to US - look at which states produce the most billionaires
+
+2 - *what country has the most assets/profits?
+
+histogram: frequency of people born over span of years 
+
+*connecting final worth of billionaires to the field they are in - can optimize to see which field produces the highest profit margins 
+
+something with final worth and if they are self made or not 
+
+DONE - 1 - mutate net profit margin = net profit/revenue * 100 - can be an indicator of the company's stability of income (shows whether a company is reliable or not) & assets to sales ratio = assets/sales - could make shiny app for this
+
+DONE - comparison of highest to lowest market value - connect to the field 
+
+plot - can filter for the top 10 companies that have the highest net profit margin and market value - a combination of both would indicate a very stable company, can make a bar plot to "show" the highest of both (like on the last question of the midterm)
+
+we can then use the top 10 companies to see which country comes up the highest (likely the US) and then connect these to the billionaires data
+
+
