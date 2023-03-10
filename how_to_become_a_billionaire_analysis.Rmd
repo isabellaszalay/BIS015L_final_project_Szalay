@@ -15,6 +15,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ------
 
 ```{r}
+billionaires
+```
+
+```{r}
 billionaires %>%
   count(category)
 ```
@@ -40,37 +44,7 @@ billionaires%>%
        fill = "Field")
 ```
 
-```{r}
-library(shiny)
 
-ui <- fluidPage(titlePanel("Final Worth by Billionaire and Field"),
-                radioButtons("x", "Select Fill Variable", choices=c("Automotive", "Diversified", "Fashion & Retail", "Finance & Investments", "Technology" ),
-                             selected="Automotive"),
-                plotOutput("plot")
-  
-)
-
-server <- function(input, output, session) {
-  output$plot <- renderPlot({
-    billionaires %>%
-    select(person_name, final_worth, category) %>%
-      arrange(-final_worth) %>%
-      head(10)%>%
-      ggplot(aes(x=person_name, y=final_worth, fill=category))+ 
-      geom_col(alpha=0.4) +  
-      theme_light(base_size=18) +
-      theme(axis.text.x = element_text(angle = 60, hjust = 1))
-  })
-  
-}
-
-shinyApp(ui, server)
-
-```
-
-- issues 
-  cannot facet wrap field with billionaires and final worth. 
-  instead of billionaires maybe their positions??? 
 
 ```{r}
 billionaires %>% 
@@ -134,7 +108,7 @@ ui <- dashboardPage(
   selectInput("x", "Select Country", choices = c("United States", "Sweden", "Canada", "China", "Hong Kong", "United Kingdom", "Germany", "France", "Saudi Arabia", "Switzerland"), 
               selected = "United States"),
   sliderInput("pointsize", "Select the Point Size", min=.5, max=5, value=2.5, step=.5),
-  plotOutput("plot", width="500px", height= "400px"))
+  plotOutput("plot", width="600px", height= "500px"))
   
 )
 
@@ -143,9 +117,12 @@ server <- function(input, output, session) {
   output$plot <- renderPlot({
     companies_NPM %>%
       filter(country==input$x) %>%
-        ggplot(aes(x=profit_bil, y=sales_bil)) + 
+        ggplot(aes(x=profit_bil, y=sales_bil, color=country)) + 
   geom_point(size=input$pointsize) +
-      theme_light()
+      theme_light() + 
+      labs(
+       x = "Profit (Billions)",
+       y = "Sales (Billions)")
     
   })
   
@@ -153,6 +130,7 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
+
 
 
 ## Mutating the profit/revenue column for net profit margin - is there a correlation between profit margins and market value?
@@ -173,6 +151,7 @@ companies %>%
   arrange(-assets_sales_ratio) %>% 
   head(10)
 ```
+
 
 ## Comparison of highest market value to lowest market value
 
@@ -254,6 +233,8 @@ billionaires_country+
         axis.title = element_text(size=10),
         axis.text.x = element_text(size=9, hjust=1))
 ```
+
+
 ## Companies by country Pie Chart
 ```{r}
 companies %>% 
@@ -264,10 +245,14 @@ companies %>%
   geom_col()+
   coord_polar()
 ```
+
+
 ```{r}
 prop <- c(590, 297, 196, 65, 64, 58, 55, 54, 54, 52)
 pie(prop)
 ```
+
+
 
 ```{r}
 myPalette <- brewer.pal(9, "BuPu")
