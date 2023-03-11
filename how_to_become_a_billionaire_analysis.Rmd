@@ -44,23 +44,6 @@ billionaires%>%
        fill = "Field")
 ```
 
-
-
-```{r}
-billionaires %>% 
-  select(person_name, final_worth, category) %>%
-  arrange(-final_worth) %>%
-  head(10)%>%
-  ggplot(aes(x=person_name, y=final_worth, fill=category))+ 
-  geom_col(alpha=0.4) + 
-  facet_wrap(~category, ncol=2)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  labs(title = "Final Worth by Billionaire and Field",
-       x = NULL,
-       y = "Final Worth",
-       fill = "Field")
-```
-
 ## Mutate NPM to add field
 
 ```{r}
@@ -81,7 +64,7 @@ companies_NPM_new <- companies_NPM %>%
 ```{r}
 companies_NPM_new
 ```
-## 
+
 
 ```{r}
 companies_NPM %>%
@@ -150,6 +133,24 @@ companies %>%
   filter(global_company != "Bradespar") %>% 
   arrange(-assets_sales_ratio) %>% 
   head(10)
+```
+
+## Arrange by profit and see whether they also have highest market values - finish this and add the categories, see the count of field for this and count of billionaries categories by final worth
+```{r}
+companies_profit <- companies %>% 
+  arrange(-profit_bil) %>% 
+  select(rank, global_company, country, profit_bil, market_value_bil) %>% 
+  mutate(category=case_when(
+    global_company =="Saudi Arabian Oil Company (Saudi Aramco)" ~ "Logistics",
+    global_company =="Porsche Automobil Holding" ~ "Automotive",
+    global_company =="Sofina" ~ "Finance & Investments",
+    global_company =="PT Saratoga Investama Sedaya" ~ "Finance & Investments",
+    global_company =="3i Group" ~ "Finance & Investments",
+    global_company == "Info Edge India" ~ "Technology",
+    global_company == "Kinnevik" ~ "Finance & Investments",
+    global_company == "Segro" ~ "Real Estate",
+    global_company == "Akelius Residential Property" ~ "Real Estate",
+    global_company == "Power Assets Holdings" ~ "Energy"))
 ```
 
 
@@ -252,9 +253,9 @@ prop <- c(590, 297, 196, 65, 64, 58, 55, 54, 54, 52)
 pie(prop)
 ```
 
-
-
 ```{r}
 myPalette <- brewer.pal(9, "BuPu")
 pie(prop, labels = c("US", "China", "Japan", "S.Korea", "UK", "Canada", "India", "France", "Hong Kong", "Germany"), border = "black", col=myPalette)
 ```
+
+## arrange them by final worth and see which states have the highest (filter for na.rm = T so that only US states show up)
