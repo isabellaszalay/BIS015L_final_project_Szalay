@@ -10,8 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-
-
 ------
 
 ```{r}
@@ -44,7 +42,7 @@ billionaires%>%
        fill = "Field")
 ```
 
-## Mutate NPM to add field
+## Mutate NPM to add field - not using
 
 ```{r}
 companies_NPM_new <- companies_NPM %>%
@@ -61,11 +59,7 @@ companies_NPM_new <- companies_NPM %>%
     global_company == "Power Assets Holdings" ~ "Energy"))
 ```
 
-```{r}
-companies_NPM_new
-```
-
-
+## Base plots for the app (NPM)
 ```{r}
 companies_NPM %>%
   ggplot(aes(x=profit_bil, y=sales_bil)) + 
@@ -79,11 +73,11 @@ companies_NPM %>%
 ```
 ```{r}
 #install.packages("shinydashboard")
+library("shinydashboard")
 ```
 
 
 ```{r}
-library(shinydashboard)
 ui <- dashboardPage(
   dashboardHeader(title="NPM by Country"),
   dashboardSidebar(disable=T),
@@ -135,7 +129,7 @@ companies %>%
   head(10)
 ```
 
-## Arrange by profit and see whether they also have highest market values - finish this and add the categories, see the count of field for this and count of billionaries categories by final worth
+## Arrange by profit and see whether they also have highest market values - finish this and add the categories, see the count of field for this and compare to count of billionaries categories by final worth
 ```{r}
 companies_profit <- companies %>% 
   arrange(-profit_bil) %>% 
