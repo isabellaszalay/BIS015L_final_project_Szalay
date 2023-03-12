@@ -18,8 +18,42 @@ billionaires
 
 ```{r}
 billionaires %>%
-  count(category)
+  count(category) %>% 
+  arrange(-n)
 ```
+## Age parameter - how old should you be to be more profitable and maximise your chances of being a billionaire
+```{r}
+billionaires %>% 
+  arrange(-final_worth) %>% 
+  separate(birth_date, into = c("month", "date", "year"), sep ="/") %>% 
+  filter(year!= "NA") %>% 
+  select(rank, person_name, final_worth, category, age, year, month) %>% 
+  count(year) %>% 
+  arrange(-n)
+```
+
+```{r}
+billionaires %>% 
+  arrange(-final_worth) %>% 
+  separate(birth_date, into = c("month", "date", "year"), sep ="/") %>% 
+  filter(year!= "NA") %>% 
+  select(rank, person_name, final_worth, category, age, year, month) %>% 
+  count(year) %>% 
+  ggplot(aes(x=year, y=n))+
+  geom_col()+
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title = element_text(size=8),
+        axis.text.x = element_text(size=5, angle = 80, hjust=1))+
+  labs(title = "Distribution of the No. of Billionaires by Year of Birth",
+       x = "Year of Birth",
+       y = "No. of Billionaires")
+```
+
+The best year to have been born to become a billionaire is 1963 with 83 billionaires being born that year.
+If you are currently 55 and above, you have a great chance of becoming a billionaire
+
+People having the most wealth are currently around 60 years of age (2023-1963). 
+Therefore, if you follow the current proposed country + category, you will likely become a billionaire by the year 2062. (2002+60)
 
 ## App that shows final worth of billionaires by the field they are in - not using
 
@@ -63,7 +97,7 @@ companies_NPM_new <- companies_NPM %>%
 ```{r}
 companies_NPM %>%
   ggplot(aes(x=profit_bil, y=sales_bil)) + 
-  geom_jitter()
+  geom_point()
 ```
 
 ```{r}
@@ -141,18 +175,51 @@ companies_profit <- companies %>%
   arrange(-profit_bil) %>% 
   select(rank, global_company, country, profit_bil, market_value_bil) %>% 
   mutate(category=case_when(
-    global_company =="Saudi Arabian Oil Company (Saudi Aramco)" ~ "Logistics",
-    global_company =="Porsche Automobil Holding" ~ "Automotive",
-    global_company =="Sofina" ~ "Finance & Investments",
-    global_company =="PT Saratoga Investama Sedaya" ~ "Finance & Investments",
-    global_company =="3i Group" ~ "Finance & Investments",
-    global_company == "Info Edge India" ~ "Technology",
-    global_company == "Kinnevik" ~ "Finance & Investments",
-    global_company == "Segro" ~ "Real Estate",
-    global_company == "Akelius Residential Property" ~ "Real Estate",
-    global_company == "Power Assets Holdings" ~ "Energy"))
+    global_company =="Saudi Arabian Oil Company (Saudi Aramco)" ~ "Energy",
+    global_company =="Apple" ~ "Technology",
+    global_company =="Berkshire Hathaway" ~ "Finance & Investments",
+    global_company =="Alphabet" ~ "Technology",
+    global_company =="Microsoft" ~ "Technology",
+    global_company == "ICBC" ~ "Finance & Investments",
+    global_company == "China Construction Bank" ~ "Finance & Investments",
+    global_company == "JPMorgan Chase" ~ "Finance & Investments",
+    global_company == "Meta Platforms" ~ "Technology",
+    global_company == "Agricultural Bank of China" ~ "Finance & Investments",
+    global_company == "Tencent Holdings" ~ "Technology",
+    global_company == "Samsung Group" ~ "Technology",
+    global_company == "Bank of China" ~ "Finance & Investments",
+    global_company == "Amazon" ~ "Technology",
+    global_company == "Bank of America" ~ "Finance & Investments",
+    global_company == "Vivendi" ~ "Media & Entertainment",
+    global_company == "Toyota Motor" ~ "Automotive",
+    global_company == "Mercedes-Benz Group" ~ "Automotive",
+    global_company == "Gazprom" ~ "Energy",
+    global_company == "Novartis" ~ "Healthcare"
+    ))
 ```
 
+```{r}
+companies_profit %>% 
+  head(20) %>% 
+  count(category) %>% 
+  arrange(-n)
+```
+For the top 10 most profitable companies, it appears that Finance & Investments and Technology are the most abundant categories for these companies.
+
+Billionaire data
+
+```{r}
+billionaires %>% 
+  select(rank, person_name, final_worth, category, country) %>% 
+  arrange(-final_worth) %>% 
+  head(20) %>% 
+  count(category) %>% 
+  arrange(-n)
+```
+
+However, based on billionaire final worth, it appears that the top 20 billionaires belong to the technology or fashion & retail sector.
+
+Technology being the highest for both, would be the most popular field to enter to maximize your chances on the pathway to becoming a billionaire with Finance & investments and Fashion & retail being close seconds.
 
 ## Comparison of highest market value to lowest market value
 
@@ -200,17 +267,12 @@ companies_MV_low+
         axis.text.x = element_text(size=9, hjust=1))
 ```
 
-## Trying to find the companies with the best market value and net profit margins - ask during OH
+## Trying to find the companies with the best market value and profit margins - not using
 ```{r}
 companies_1 <- companies %>% 
-  mutate(net_profit_margin_percent = profit_bil/sales_bil *100) %>% 
+  mutate(mv_profit_bil = profit_bil/market_value_bil *100) %>% 
   filter(global_company != "Bradespar") %>% 
-  arrange(-net_profit_margin_percent)
-```
-
-```{r}
-companies_1 %>% 
-  arrange(-market_value_bil)
+  arrange(-mv_profit_bil)
 ```
 
 ## Billionaire data
