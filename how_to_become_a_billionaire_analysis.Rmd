@@ -73,21 +73,29 @@ companies_NPM %>%
 ```
 ```{r}
 #install.packages("shinydashboard")
-library("shinydashboard")
+library(shinydashboard)
 ```
 
 
-```{r}
+```{r, eval=F, echo=T}
+library(shinydashboard)
 ui <- dashboardPage(
   dashboardHeader(title="NPM by Country"),
   dashboardSidebar(disable=T),
   dashboardBody(
+fluidRow(
+    box(
   selectInput("x", "Select Country", choices = c("United States", "Sweden", "Canada", "China", "Hong Kong", "United Kingdom", "Germany", "France", "Saudi Arabia", "Switzerland"), 
               selected = "United States"),
-  sliderInput("pointsize", "Select the Point Size", min=.5, max=5, value=2.5, step=.5),
-  plotOutput("plot", width="600px", height= "500px"))
+  sliderInput("pointsize", "Select the Point Size", min=.5, max=5, value=2.5, step=.5)
+  ),
   
+  box(
+  plotOutput("plot", width="600px", height= "500px"))
 )
+)
+)
+
 
 server <- function(input, output, session) {
   session$onSessionEnded(stopApp)
