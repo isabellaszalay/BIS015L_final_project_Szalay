@@ -21,7 +21,7 @@ billionaires %>%
   count(category)
 ```
 
-## App that shows final worth of billionaires by the field they are in
+## App that shows final worth of billionaires by the field they are in - not using
 
 ```{r}
 companies
