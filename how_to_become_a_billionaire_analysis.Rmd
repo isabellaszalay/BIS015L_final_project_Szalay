@@ -116,8 +116,6 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-
-
 ## Mutating the profit/revenue column for net profit margin - is there a correlation between profit margins and market value?
 ```{r}
 companies_NPM <- companies %>% 
