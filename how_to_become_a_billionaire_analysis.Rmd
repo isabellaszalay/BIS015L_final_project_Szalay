@@ -12,9 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ------
 
+## Exploratory analysis of datasets
+
 ```{r}
-billionaires
+glimpse(billionaires)
 ```
+```{r}
+summary(companies)
+```
+
 
 ```{r}
 billionaires %>%
@@ -22,7 +28,7 @@ billionaires %>%
   arrange(-n)
 ```
 
-## Age parameter - how old should you be to be more profitable and maximise your chances of being a billionaire
+## Age parameter - how old should you be to be more profitable and maximise your chances of being a billionaire 
 ```{r}
 billionaires %>% 
   arrange(-final_worth) %>% 
@@ -33,7 +39,6 @@ billionaires %>%
   arrange(-n)
 ```
 
-
 ```{r}
 billionaires %>% 
   arrange(-final_worth) %>% 
@@ -42,10 +47,10 @@ billionaires %>%
   select(rank, person_name, final_worth, category, age, year, month) %>% 
   count(year)%>% 
   ggplot(aes(x=year, y=n))+
-  geom_col()+
+  geom_col(color = "black", fill = "brown", alpha = 0.8)+
   theme(plot.title = element_text(size = 12, face = "bold"),
         axis.title = element_text(size=8),
-        axis.text.x = element_text(size=5, angle = 80, hjust=1))+
+        axis.text.x = element_text(size=5.5, angle = 80, hjust=1))+
   labs(title = "Distribution of the No. of Billionaires by Year of Birth",
        x = "Year of Birth",
        y = "No. of Billionaires")
@@ -57,42 +62,15 @@ If you are currently 55 and above, you have a great chance of becoming a billion
 People having the most wealth are currently around 60 years of age (2023-1963). 
 Therefore, if you follow the current proposed country + category, you will likely become a billionaire by the year 2062. (2002+60)
 
-## App that shows final worth of billionaires by the field they are in - not using
 
+## Mutating the profit/revenue column for net profit margin - is there a correlation between profit margins and sales?
 ```{r}
-companies
-```
-
-```{r}
-billionaires%>% 
-  select(person_name, final_worth, category) %>%
-  arrange(-final_worth) %>%
-  head(10)%>%
-  ggplot(aes(x=person_name, y=final_worth, fill=category))+ 
-  geom_col(alpha=0.4) + 
-  facet_wrap(~category, ncol=2)+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  labs(title = "Final Worth by Billionaire and Field",
-       x = NULL,
-       y = "Final Worth",
-       fill = "Field")
-```
-
-## Mutate NPM to add field - not using
-
-```{r}
-companies_NPM_new <- companies_NPM %>%
-  mutate(category=case_when(
-    global_company =="Shenzhen Feima International Supply Chain Co., Ltd." ~ "Logistics",
-    global_company =="Porsche Automobil Holding" ~ "Automotive",
-    global_company =="Sofina" ~ "Finance & Investments",
-    global_company =="PT Saratoga Investama Sedaya" ~ "Finance & Investments",
-    global_company =="3i Group" ~ "Finance & Investments",
-    global_company == "Info Edge India" ~ "Technology",
-    global_company == "Kinnevik" ~ "Finance & Investments",
-    global_company == "Segro" ~ "Real Estate",
-    global_company == "Akelius Residential Property" ~ "Real Estate",
-    global_company == "Power Assets Holdings" ~ "Energy"))
+companies_NPM <- companies %>% 
+  mutate(net_profit_margin_percent = profit_bil/sales_bil *100) %>% 
+  filter(global_company != "Bradespar") %>% 
+  arrange(-net_profit_margin_percent) %>%
+  head(100)
+companies_NPM
 ```
 
 ## Base plots for the app (NPM)
@@ -153,16 +131,6 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-## Mutating the profit/revenue column for net profit margin - is there a correlation between profit margins and market value?
-```{r}
-companies_NPM <- companies %>% 
-  mutate(net_profit_margin_percent = profit_bil/sales_bil *100) %>% 
-  filter(global_company != "Bradespar") %>% 
-  arrange(-net_profit_margin_percent) %>%
-  head(100)
-companies_NPM
-```
-
 ## Mutating the assets to sales ratio
 ```{r}
 companies %>% 
@@ -172,7 +140,16 @@ companies %>%
   head(10)
 ```
 
-## Arrange by profit and see whether they also have highest market values - finish this and add the categories, see the count of field for this and compare to count of billionaries categories by final worth
+## Arrange by profit and assigning categories to the top 20, comparing the count of field for this to the count of billionaries' categories by final worth
+
+# Finding the specific categories for the billionaire dataset
+```{r}
+billionaires %>%
+  count(category) %>% 
+  arrange(-n)
+```
+
+# Assigning categories to the top 20 most profitable companies
 ```{r}
 companies_profit <- companies %>% 
   arrange(-profit_bil) %>% 
@@ -207,9 +184,10 @@ companies_profit %>%
   count(category) %>% 
   arrange(-n)
 ```
+
 For the top 10 most profitable companies, it appears that Finance & Investments and Technology are the most abundant categories for these companies.
 
-Billionaire data
+Billionaires
 
 ```{r}
 billionaires %>% 
@@ -222,7 +200,7 @@ billionaires %>%
 
 However, based on billionaire final worth, it appears that the top 20 billionaires belong to the technology or fashion & retail sector.
 
-Technology being the highest for both, would be the most popular field to enter to maximize your chances on the pathway to becoming a billionaire with Finance & investments and Fashion & retail being close seconds.
+Technology being the highest for both, would be the most popular field to enter to maximize your of becoming a billionaire, with Finance & investments and Fashion & retail being close seconds.
 
 ## Comparison of highest market value to lowest market value
 
@@ -270,13 +248,6 @@ companies_MV_low+
         axis.text.x = element_text(size=9, hjust=1))
 ```
 
-## Trying to find the companies with the best market value and profit margins - not using
-```{r}
-companies_1 <- companies %>% 
-  mutate(mv_profit_bil = profit_bil/market_value_bil *100) %>% 
-  filter(global_company != "Bradespar") %>% 
-  arrange(-mv_profit_bil)
-```
 
 ## Billionaire data
 ```{r}
@@ -300,8 +271,6 @@ billionaires_country+
         axis.text.x = element_text(size=9, hjust=1))
 ```
 
-
-
 ## Companies by country Pie Chart
 ```{r}
 companies %>% 
@@ -313,6 +282,7 @@ companies %>%
   coord_polar()
 ```
 
+## Not using
 
 ```{r}
 prop <- c(590, 297, 196, 65, 64, 58, 55, 54, 54, 52)
@@ -324,11 +294,12 @@ myPalette <- brewer.pal(9, "BuPu")
 pie(prop, labels = c("US", "China", "Japan", "S.Korea", "UK", "Canada", "India", "France", "Hong Kong", "Germany"), border = "black", col=myPalette)
 ```
 
-## arrange them by final worth and see which states have the highest (filter for na.rm = T so that only US states show up)
+## Arrange them by final worth and see which states have the highest (filter for na.rm = T so that only US states show up)
 
 ```{r}
 billionaires
 ```
+
 ```{r}
 billionaires %>%
   select(rank, person_name, final_worth, state) %>%
@@ -338,7 +309,6 @@ billionaires %>%
   arrange(-n)
 ```
 
-
 ```{r}
 billionaires %>%
   select(rank, person_name, final_worth, state) %>%
@@ -346,6 +316,44 @@ billionaires %>%
   arrange(-final_worth)
 ```
 
+## Unused sections for the presentation but relevant exploratory work
 
+# App that shows final worth of billionaires by the field they are in - not using
+```{r}
+billionaires%>% 
+  select(person_name, final_worth, category) %>%
+  arrange(-final_worth) %>%
+  head(10)%>%
+  ggplot(aes(x=person_name, y=final_worth, fill=category))+ 
+  geom_col(alpha=0.4) + 
+  facet_wrap(~category, ncol=2)+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  labs(title = "Final Worth by Billionaire and Field",
+       x = NULL,
+       y = "Final Worth",
+       fill = "Field")
+```
 
+# Mutate NPM to add field - not using
+```{r}
+companies_NPM_new <- companies_NPM %>%
+  mutate(category=case_when(
+    global_company =="Shenzhen Feima International Supply Chain Co., Ltd." ~ "Logistics",
+    global_company =="Porsche Automobil Holding" ~ "Automotive",
+    global_company =="Sofina" ~ "Finance & Investments",
+    global_company =="PT Saratoga Investama Sedaya" ~ "Finance & Investments",
+    global_company =="3i Group" ~ "Finance & Investments",
+    global_company == "Info Edge India" ~ "Technology",
+    global_company == "Kinnevik" ~ "Finance & Investments",
+    global_company == "Segro" ~ "Real Estate",
+    global_company == "Akelius Residential Property" ~ "Real Estate",
+    global_company == "Power Assets Holdings" ~ "Energy"))
+```
 
+## Trying to find the companies with the best market value and profit margins - not using
+```{r}
+companies_1 <- companies %>% 
+  mutate(mv_profit_bil = profit_bil/market_value_bil *100) %>% 
+  filter(global_company != "Bradespar") %>% 
+  arrange(-mv_profit_bil)
+```
