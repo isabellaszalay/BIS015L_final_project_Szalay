@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 glimpse(billionaires)
 ```
+
 ```{r}
 summary(companies)
 ```
@@ -48,6 +49,7 @@ billionaires %>%
   count(year)%>% 
   ggplot(aes(x=year, y=n))+
   geom_col(color = "black", fill = "brown", alpha = 0.8)+
+  theme_light() + 
   theme(plot.title = element_text(size = 12, face = "bold"),
         axis.title = element_text(size=8),
         axis.text.x = element_text(size=5.5, angle = 80, hjust=1))+
@@ -220,7 +222,7 @@ companies_MV_high <- companies %>%
 
 ```{r}
 companies_MV_high+
-  theme_light()+
+  theme_linedraw()+
   theme(plot.title = element_text(size = 10, face = "bold"),
         axis.title = element_text(size=10),
         axis.text.x = element_text(size=9, hjust=1))
@@ -242,7 +244,7 @@ companies_MV_low <- companies %>%
 
 ```{r}
 companies_MV_low+
-  theme_light()+
+  theme_linedraw()+
   theme(plot.title = element_text(size = 10, face = "bold"),
         axis.title = element_text(size=10),
         axis.text.x = element_text(size=9, hjust=1))
@@ -265,7 +267,7 @@ billionaires_country <- billionaires %>%
 
 ```{r}
 billionaires_country+
-  theme_light()+
+  theme_linedraw()+
   theme(plot.title = element_text(size = 10, face = "bold"),
         axis.title = element_text(size=10),
         axis.text.x = element_text(size=9, hjust=1))
@@ -315,6 +317,26 @@ billionaires %>%
   filter(state!="NA") %>%
   arrange(-final_worth)
 ```
+
+```{r}
+billionaires %>%
+  select(rank, person_name, final_worth, state) %>%
+  filter(state!="NA") %>%
+  arrange(-final_worth) %>%
+  count(state) %>%
+  arrange(-n) %>%
+  head(15) %>%
+  ggplot(aes(x=state, y=n)) + 
+  geom_col(color = "brown", fill = "plum", alpha = 0.8)+
+  theme_linedraw() + 
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title = element_text(size=8),
+        axis.text.x = element_text(size=5.5, angle = 80, hjust=1))+
+  labs(title = "Distribution of the No. of Billionaires by State",
+       x = "State",
+       y = "No. of Billionaires")
+```
+
 
 ## Unused sections for the presentation but relevant exploratory work
 
