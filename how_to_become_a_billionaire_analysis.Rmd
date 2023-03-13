@@ -161,7 +161,9 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) { 
   output$plot <- renderPlot({
-  ggplot(companies_NPM, aes_string(x = input$x, color="country")) +
+ companies_NPM %>%
+      filter(country==input$x) %>%
+        ggplot(aes(x=profit_bil, y=sales_bil, color=country)) +
       geom_point(size=input$pointsize, alpha=0.8) + 
       theme_light(base_size = 18) + 
       labs(
@@ -174,6 +176,49 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
+
+```{r, eval=F, echo=T}
+ui <- fluidPage(    
+  
+  titlePanel("NPM by Country"), 
+  
+
+  sidebarLayout(      
+    
+  
+  sidebarPanel(
+  selectInput("country", " Select Country of Interest:", choices= c("United States", "Sweden", "Canada", "China", "Hong Kong", "United Kingdom", "Germany", "France", "Saudi Arabia", "Switzerland"), 
+              selected = "United States")
+  , 
+    
+  
+  mainPanel(
+  plotOutput("Plot"))
+  )
+  )
+
+  
+  server <- function(input, output, session) {
+  
+  
+  session$onSessionEnded(stopApp)
+  
+  
+  output$Plot <- renderPlot({
+    
+companies_NPM %>%
+      filter(country==input$x) %>%
+        ggplot(aes(x=profit_bil, y=sales_bil, color=country)) +
+      geom_point(size=input$pointsize, alpha=0.8) + 
+      theme_light(base_size = 18) + 
+      labs(
+       x = "Profit (Billions)",
+       y = "Sales (Billions)")
+  })
+  }
+
+shinyApp(ui, server)
+```
 
 ## Mutating the assets to sales ratio
 ```{r}
