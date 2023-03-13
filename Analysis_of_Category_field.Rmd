@@ -1,0 +1,70 @@
+---
+title: "Analysis of Category (field to be in)"
+output: html_document
+date: "2023-03-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Arranging companies by profit and assigning categories to the top 20 companies, comparing the count of field for this to the count of billionaries' categories by final worth
+
+Finding the specific categories for the billionaire dataset
+```{r}
+billionaires %>%
+  count(category) %>% 
+  arrange(-n)
+```
+
+Assigning categories to the top 20 most profitable companies
+```{r}
+companies_profit <- companies %>% 
+  arrange(-profit_bil) %>% 
+  select(rank, global_company, country, profit_bil, market_value_bil) %>% 
+  mutate(category=case_when(
+    global_company =="Saudi Arabian Oil Company (Saudi Aramco)" ~ "Energy",
+    global_company =="Apple" ~ "Technology",
+    global_company =="Berkshire Hathaway" ~ "Finance & Investments",
+    global_company =="Alphabet" ~ "Technology",
+    global_company =="Microsoft" ~ "Technology",
+    global_company == "ICBC" ~ "Finance & Investments",
+    global_company == "China Construction Bank" ~ "Finance & Investments",
+    global_company == "JPMorgan Chase" ~ "Finance & Investments",
+    global_company == "Meta Platforms" ~ "Technology",
+    global_company == "Agricultural Bank of China" ~ "Finance & Investments",
+    global_company == "Tencent Holdings" ~ "Technology",
+    global_company == "Samsung Group" ~ "Technology",
+    global_company == "Bank of China" ~ "Finance & Investments",
+    global_company == "Amazon" ~ "Technology",
+    global_company == "Bank of America" ~ "Finance & Investments",
+    global_company == "Vivendi" ~ "Media & Entertainment",
+    global_company == "Toyota Motor" ~ "Automotive",
+    global_company == "Mercedes-Benz Group" ~ "Automotive",
+    global_company == "Gazprom" ~ "Energy",
+    global_company == "Novartis" ~ "Healthcare"
+    ))
+```
+
+```{r}
+companies_profit %>% 
+  head(20) %>% 
+  count(category) %>% 
+  arrange(-n)
+```
+
+For the top 20 most profitable companies, it appears that Finance & Investments and Technology are the most abundant categories for these companies.
+
+Billionaires categories by Final Worth
+```{r}
+billionaires %>% 
+  select(rank, person_name, final_worth, category, country) %>% 
+  arrange(-final_worth) %>% 
+  head(20) %>% 
+  count(category) %>% 
+  arrange(-n)
+```
+
+However, based on billionaire final worth, it appears that the top 20 billionaires belong to the technology or fashion & retail sector.
+
+Conclusion: Technology being the highest for both, would be the most popular field to enter to maximize your of becoming a billionaire, with Finance & investments and Fashion & retail being close seconds.

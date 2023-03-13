@@ -1,0 +1,133 @@
+---
+title: "Analysis_of_Country"
+output: html_document
+date: "2023-03-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## No. of Billionaires by Country
+```{r}
+billionaires_country <- billionaires %>% 
+  count(country) %>% 
+  arrange(-n) %>% 
+  head(10) %>% 
+  ggplot(aes(x=reorder(country,n), y=n))+
+  geom_col(color = "black", fill ="coral1")+
+  coord_flip()+
+  labs(title = "No. of Billionaires by Country",
+       x = "Country",
+       y = "Number of Billionaires")
+```
+
+```{r}
+billionaires_country+
+  theme_linedraw()+
+  theme(plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=9, hjust=1))
+```
+
+## Companies by country Pie Chart
+```{r}
+companies %>% 
+  count(country) %>% 
+  arrange(-n) %>% 
+  head(10) %>% 
+  ggplot(aes(x=country, y=n, fill=country))+
+  geom_col()+
+  coord_polar()
+```
+
+## Comparison of highest market value to lowest market value
+
+Highest market value - top 10
+```{r}
+companies_MV_high <- companies %>% 
+  arrange(-market_value_bil) %>% 
+  head(10) %>% 
+  select(global_company, country, market_value_bil) %>% 
+  ggplot(aes(x=reorder(global_company, market_value_bil), y=market_value_bil, fill = country))+
+  geom_col(color = "black")+
+  coord_flip()+
+  labs(title = " Highest Market Values of the Top 10 Global Companies by Country",
+       x = "Market Value",
+       y = "Global Company")
+```
+
+```{r}
+companies_MV_high+
+  theme_linedraw()+
+  theme(plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=9, hjust=1))
+```
+
+Lowest Market Value - Lower 10
+```{r}
+companies_MV_low <- companies %>% 
+  arrange(market_value_bil) %>% 
+  head(10) %>% 
+  select(global_company, country, market_value_bil) %>% 
+  ggplot(aes(x=reorder(global_company, market_value_bil), y=market_value_bil, fill = country))+
+  geom_col(color = "black")+
+  coord_flip()+
+  labs(title = "Lowest Market Values of the Top 10 Global Companies by Country",
+       x = "Market Value",
+       y = "Global Company")
+```
+
+```{r}
+companies_MV_low+
+  theme_linedraw()+
+  theme(plot.title = element_text(size = 10, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=9, hjust=1))
+```
+
+Conclusion: the US is the best country to be in to maximise your chances of becoming a billionaire.
+
+## Arranging Billionaires by final worth and seeing which states have the highest
+
+```{r}
+billionaires
+```
+
+```{r}
+billionaires %>%
+  select(rank, person_name, final_worth, state) %>%
+  filter(state!="NA") %>%
+  arrange(-final_worth) %>%
+  count(state) %>%
+  arrange(-n)
+```
+
+```{r}
+billionaires %>%
+  select(rank, person_name, final_worth, state) %>%
+  filter(state!="NA") %>%
+  arrange(-final_worth)
+```
+
+```{r}
+billionaires %>%
+  select(rank, person_name, final_worth, state) %>%
+  filter(state!="NA") %>%
+  arrange(-final_worth) %>%
+  count(state) %>%
+  arrange(-n) %>%
+  head(15) %>%
+  ggplot(aes(x=state, y=n)) + 
+  geom_col(color = "brown", fill = "plum", alpha = 0.8)+
+  theme_linedraw() + 
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=7, angle = 65, hjust=1))+
+  labs(title = "Distribution of the No. of Billionaires by State",
+       x = "State",
+       y = "No. of Billionaires")
+```
+
+Conclusion: Within the US, you can have a significantly higher net worth if you're in California, New York or Florida.

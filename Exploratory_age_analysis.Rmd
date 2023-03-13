@@ -69,7 +69,7 @@ People having the most wealth are currently around 60 years of age (2023-1963).
 Therefore, if you follow the current proposed country + category, you will likely become a billionaire by the year 2062. (2002+60)
 
 
-## Mutating the profit/revenue column for net profit margin - is there a correlation between profit margins and sales?
+## Mutating the profit/sales column for net profit margin - is there a correlation between profit margins and sales?
 ```{r}
 companies_NPM <- companies %>% 
   mutate(net_profit_margin_percent = profit_bil/sales_bil *100) %>% 
@@ -77,70 +77,6 @@ companies_NPM <- companies %>%
   arrange(-net_profit_margin_percent) %>%
   head(100)
 companies_NPM
-```
-
-```{r}
-#write.csv("companies_NPM.csv", row.names = F)
-```
-
-## Base plots for the app (NPM)
-```{r}
-companies_NPM %>%
-  ggplot(aes(x=profit_bil, y=sales_bil)) + 
-  geom_point()
-```
-
-```{r}
-companies_NPM %>%
-  count(country) %>%
-  arrange(-n)
-```
-
-```{r}
-#install.packages("shinydashboard")
-library(shinydashboard)
-```
-
-
-```{r, eval=F, echo=T}
-library(shiny)
-library(shinydashboard)
-ui <- dashboardPage(
-  dashboardHeader(title="NPM by Country"),
-  dashboardSidebar(disable=T),
-  dashboardBody(
-    fluidRow(
-      box(
-        selectInput("x", "Select Country", 
-                    choices = c("United States", "Sweden", "Canada", "China", "Hong Kong", "United Kingdom", "Germany", "France", "Saudi Arabia", "Switzerland"), 
-                    selected = "United States"),
-        sliderInput("pointsize", "Select the Point Size", min=.5, max=5, value=2.5, step=.5)
-      ),
-      
-      box(
-        plotOutput("plot", width="600px", height= "500px"))
-    )
-  )
-)
-
-
-server <- function(input, output, session) {
-  session$onSessionEnded(stopApp)
-  output$plot <- renderPlot({
-    companies_NPM %>%
-      filter(country==input$x) %>%
-      ggplot(aes(x=profit_bil, y=sales_bil, color=country)) + 
-      geom_point(size=input$pointsize) +
-      theme_light() + 
-      labs(
-        x = "Profit (Billions)",
-        y = "Sales (Billions)")
-    
-  })
-  
-}
-
-shinyApp(ui, server)
 ```
 
 ## Mutating the assets to sales ratio
@@ -152,7 +88,7 @@ companies %>%
   head(10)
 ```
 
-## Arrange by profit and assigning categories to the top 20, comparing the count of field for this to the count of billionaries' categories by final worth
+## Arrange by profit and assigning categories to the top 20, comparing the count of field for this to the count of billionaries' categories by final worth - in the other document
 
 # Finding the specific categories for the billionaire dataset
 ```{r}
@@ -295,7 +231,6 @@ companies %>%
 ```
 
 ## Not using
-
 ```{r}
 prop <- c(590, 297, 196, 65, 64, 58, 55, 54, 54, 52)
 pie(prop)

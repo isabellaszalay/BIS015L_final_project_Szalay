@@ -8,6 +8,16 @@ date: "2023-03-13"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Mutating the profit/sales column for net profit margin 
+```{r}
+companies_NPM <- companies %>% 
+  mutate(net_profit_margin_percent = profit_bil/sales_bil *100) %>% 
+  filter(global_company != "Bradespar") %>% 
+  arrange(-net_profit_margin_percent) %>%
+  head(100)
+companies_NPM
+```
+
 ```{r}
 #write.csv("companies_NPM.csv", row.names = F)
 ```
