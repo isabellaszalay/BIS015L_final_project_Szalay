@@ -22,10 +22,16 @@ Through several exploratory analyses, we delve into
   
 ## Exploratory_age_analysis
 
-  This file explores how old should you be to be more profitable and maximise your chances of being a billionaire. 
+  This file explores how old should you be to be more profitable and maximize your chances of being a billionaire. 
 
   
 
 ## Analysis_of_country
 
+  This file does many different location analyses of billionaires and companies to show the optimum locations 
+
 ## Shinyapp_NPM
+
+  Our app explores the sales/profits ratio, or rather the net profit margin of the top 100 companies. 
+  
+  In addition to this displayed relationship, the App allows for you to select for the top 10 countries as well as changing the size of the points on the graph.
