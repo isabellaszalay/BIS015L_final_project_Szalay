@@ -21,6 +21,7 @@ billionaires %>%
   count(category) %>% 
   arrange(-n)
 ```
+
 ## Age parameter - how old should you be to be more profitable and maximise your chances of being a billionaire
 ```{r}
 billionaires %>% 
@@ -298,6 +299,7 @@ billionaires_country+
 ```
 
 
+
 ## Companies by country Pie Chart
 ```{r}
 companies %>% 
@@ -321,3 +323,27 @@ pie(prop, labels = c("US", "China", "Japan", "S.Korea", "UK", "Canada", "India",
 ```
 
 ## arrange them by final worth and see which states have the highest (filter for na.rm = T so that only US states show up)
+
+```{r}
+billionaires
+```
+```{r}
+billionaires %>%
+  select(rank, person_name, final_worth, state) %>%
+  filter(state!="NA") %>%
+  arrange(-final_worth) %>%
+  count(state) %>%
+  arrange(-n)
+```
+
+
+```{r}
+billionaires %>%
+  select(rank, person_name, final_worth, state) %>%
+  filter(state!="NA") %>%
+  arrange(-final_worth)
+```
+
+
+
+
