@@ -33,13 +33,14 @@ billionaires %>%
   arrange(-n)
 ```
 
+
 ```{r}
 billionaires %>% 
   arrange(-final_worth) %>% 
   separate(birth_date, into = c("month", "date", "year"), sep ="/") %>% 
   filter(year!= "NA") %>% 
   select(rank, person_name, final_worth, category, age, year, month) %>% 
-  count(year) %>% 
+  count(year)%>% 
   ggplot(aes(x=year, y=n))+
   geom_col()+
   theme(plot.title = element_text(size = 12, face = "bold"),
@@ -106,6 +107,7 @@ companies_NPM %>%
   count(country) %>%
   arrange(-n)
 ```
+
 ```{r}
 #install.packages("shinydashboard")
 library(shinydashboard)
