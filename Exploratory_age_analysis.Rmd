@@ -7,14 +7,10 @@ date: "2023-03-09"
 library(shiny)
 ```
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-------
 
 ## Exploratory analysis of datasets
 
@@ -26,12 +22,12 @@ glimpse(billionaires)
 summary(companies)
 ```
 
-
 ```{r}
 billionaires %>%
   count(category) %>% 
   arrange(-n)
 ```
+
 
 ## Age parameter - how old should you be to be more profitable and maximise your chances of being a billionaire 
 ```{r}

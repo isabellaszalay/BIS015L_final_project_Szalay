@@ -8,6 +8,7 @@ date: "2023-03-13"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Shinyapp for Net Profit Margin
 ## Mutating the profit/sales column for net profit margin 
 ```{r}
 companies_NPM <- companies %>% 
@@ -80,3 +81,4 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
+
