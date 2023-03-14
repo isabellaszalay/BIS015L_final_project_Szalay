@@ -15,9 +15,9 @@ library("janitor")
 
 library("naniar")
 
-library(RColorBrewer)
+library("RColorBrewer")
 
-library(paletteer)
+library("paletteer")
 ```
 
 ```{r}

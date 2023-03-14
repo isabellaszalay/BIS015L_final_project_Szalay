@@ -8,7 +8,8 @@ date: "2023-03-13"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Shinyapp for Net Profit Margin
+## Shinyapp for Net Profit Margin of the top 100 companies
+
 ## Mutating the profit/sales column for net profit margin 
 ```{r}
 companies_NPM <- companies %>% 
