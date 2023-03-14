@@ -75,7 +75,7 @@ companies_NPM <- companies %>%
 companies_NPM
 ```
 
-## Mutating the assets to sales ratio
+## Mutating the assets to sales ratio - not using
 ```{r}
 companies %>% 
   mutate(assets_sales_ratio = assets_bil/sales_bil) %>% 
