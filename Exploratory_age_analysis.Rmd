@@ -28,17 +28,55 @@ billionaires %>%
   arrange(-n)
 ```
 
+```{r}
+filter(year!= "NA") %>% 
+  select(rank, person_name, final_worth, category, age, year, month) %>% 
+  count(year) %>% 
+  arrange(-n) %>%
+  ggplot(aes(x=year))
+```
 
 ## Age parameter - how old should you be to be more profitable and maximise your chances of being a billionaire 
 ```{r}
-billionaires %>% 
+billionaires_age <- billionaires %>% 
   arrange(-final_worth) %>% 
-  separate(birth_date, into = c("month", "date", "year"), sep ="/") %>% 
-  filter(year!= "NA") %>% 
-  select(rank, person_name, final_worth, category, age, year, month) %>% 
-  count(year) %>% 
-  arrange(-n)
+  separate(birth_date, into = c("month", "date", "year"), sep ="/")
+billionaires_age
 ```
+
+```{r}
+billionaires_age
+```
+```{r}
+billionaires_age %>%
+  count(year) %>%
+  arrange(-n) %>%
+  filter(year!= "NA") %>%
+  ggplot(aes(x=year, y=n)) + 
+  geom_line(color="plum", fill="plum") + 
+  theme_light() + 
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title = element_text(size=8),
+        axis.text.x = element_text(size=5.5, angle = 80, hjust=1))+
+  labs(title = "Distribution of the No. of Billionaires by Year of Birth",
+       x = "Year of Birth",
+       y = "No. of Billionaires")
+```
+
+
+```{r}
+billionaires_age$year = as.numeric(billionaires_age$year)
+```
+
+
+```{r}
+homerange %>% 
+  ggplot(aes(x=log10.mass)) +
+  geom_histogram(aes(y = ..density..), fill = "deepskyblue4", alpha = 0.4, color = "black")+
+  geom_density(color = "red")+
+  labs(title = "Distribution of Body Mass")
+```
+
 
 ```{r}
 billionaires %>% 
