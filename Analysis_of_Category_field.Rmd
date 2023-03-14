@@ -50,7 +50,16 @@ companies_profit <- companies %>%
 companies_profit %>% 
   head(20) %>% 
   count(category) %>% 
-  arrange(-n)
+  arrange(-n) %>% 
+  ggplot(aes(x=category, y=n, fill = category))+
+  geom_col()+
+  theme_light() + 
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=7, angle = 55, hjust=1))+
+  labs(title = "Distribution of Fields for the Top 20 Companies",
+       x = "Field",
+       y = "No. of Companies in each field")
 ```
 
 For the top 20 most profitable companies, it appears that Finance & Investments and Technology are the most abundant categories for these companies.
@@ -62,7 +71,16 @@ billionaires %>%
   arrange(-final_worth) %>% 
   head(20) %>% 
   count(category) %>% 
-  arrange(-n)
+  arrange(-n) %>% 
+  ggplot(aes(x=category, y=n, fill = category))+
+  geom_col()+
+  theme_light() + 
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title = element_text(size=10),
+        axis.text.x = element_text(size=7, angle = 55, hjust=1))+
+  labs(title = "Distribution of Fields by Top 20 Richest Billionaires",
+       x = "Field",
+       y = "No. of Billionaires in each field")
 ```
 
 However, based on billionaire final worth, it appears that the top 20 billionaires belong to the technology or fashion & retail sector.
