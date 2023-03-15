@@ -4,7 +4,7 @@ Come with us (Isabella & Sri) as we go through the Forbes 2022 dataset of the to
 
 ## About our project
 
-We completed this project by pair programming, working together on most all parts. Through several exploratory analyses, we delve into:
+We completed this project by pair programming, working together on most parts. Through several exploratory analyses, we delve into:
 
 ## Tidying the Billionaire and Companies data
 
